@@ -1,0 +1,146 @@
+body {
+    background-color: rgb(204, 227, 199);
+}
+
+:root {
+    margin: 0;
+    padding: 0;
+}
+
+@font-face {
+    font-family: 'Monopoly';
+    src: url('../fonts/MONOPOLY_INLINE.ttf');
+}
+
+.board {
+    height: 100vh;
+    width: auto;
+}
+
+.tile {
+    border: 1px solid black;
+    display: flex;
+}
+
+.corner-tile {
+    aspect-ratio: 1/1;
+}
+
+.vertical-tile {
+    aspect-ratio: 2/5;
+}
+
+.horizontal-tile {
+    aspect-ratio: 5/2;
+}
+
+.property-banner-h {
+    height: 18%;
+    width: 100%;
+}
+
+.property-banner-v {
+    height: 100%;
+    width: 18%;
+}
+
+.brown-property {
+    background-color: rgb(149, 84, 54);
+}
+
+.light-blue-property {
+    background-color: rgb(170, 224, 250);
+}
+
+.pink-property {
+    background-color: rgb(217, 58, 150);
+}
+
+.orange-property {
+    background-color: rgb(247, 148, 29);
+}
+
+.red-property {
+    background-color: rgb(237, 27, 36);
+}
+
+.yellow-property {
+    background-color: rgb(254, 242, 0);
+}
+
+.green-property {
+    background-color: rgb(31, 178, 90);
+}
+
+.dark-blue-property {
+    background-color: rgb(0, 114, 187);
+}
+
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
+h6 .rotate-90,
+h6 .rotate-270 {
+    writing-mode: vertical-lr;
+    width: 1rem;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+.rotate-270 {
+    transform: rotate(270deg);
+}
+
+.text-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+}
+
+.monopoly-text {
+    font-family: 'Monopoly';
+    text-transform: uppercase;
+    font-size: 1vw;
+}
+
+.bigger-font {
+    font-size: 1.2vw;
+}
+
+.monopoly-money {
+    display: inline-block;
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+
+.v-img {
+    width: 5.5vw;
+}
+
+.h-img {
+    height: 5vw;
+}
+
+.corner-image {
+    width: 17vw;
+    margin-left: -1.4vw;
+}
+
+.center-image {
+    width: 60vw;
+    margin-left: 3vw;
+}
+
+.text-container:hover {
+    background-color: rgb(217, 241, 212);
+}
+
+.corner-tile:hover {
+    background-color: rgb(217, 241, 212);
+}
