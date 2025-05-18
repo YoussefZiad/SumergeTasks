@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+        {
+        "imports": {
+            "@material/web/": "https://esm.run/@material/web/"
+        }
+        }
+    </script>
+    <script type="module">
+        import '@material/web/all.js';
+        import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+
+        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="./style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <link href="style.css" type="text/css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/8ee1ce743c.js" crossorigin="anonymous"></script>
+    <title>Todo List</title>
+</head>
+<body>
+    <div class="container-fluid main-container">
+        <div class="row">
+            <div class="col">
+                <div class="header-container">
+                    <h1 class="md-typescale-display-medium header-text">Todo List</h1>
+                    <h4 class="md-typescale-display-small header-text">Align your daily tasks!</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col d-flex justify-content-center align-items-center flex-row p-3">
+                <form action="javascript:void(0)">
+                    <input id="search" class="search" type="search" oninput="searchTasks(this.value, false)" onchange="searchTasks(this.value, true)" id="task-search" class="form-control" placeholder="Search for tasks by name..." />
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="md-container todo-list-container">
+                    <h4 class="md-typescale-display-small header-text">Pending Tasks</h4>
+                    <ul id="pending-tasks">
+                        
+                    </ul>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="md-container todo-list-container">
+                    <h4 class="md-typescale-display-small header-text">Completed Tasks</h4>
+                    <ul id="completed-tasks">
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="todo.js" type="text/javascript"></script>
+
+</body>
+</html>

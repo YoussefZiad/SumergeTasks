@@ -1,0 +1,90 @@
+:root {
+    margin: 0;
+    padding: 0;
+    --md-sys-color-primary: darkblue;
+    --md-sys-color-secondary: skyblue;
+}
+
+body {
+    background-color: var(--md-sys-color-secondary);
+    padding: 0;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.todo-list-container {
+    background-color: lightblue;
+    margin: 2%;
+    padding: 2%;
+    border-radius: 10px;
+    height: auto;
+}
+
+.header-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 30vh;
+    width: auto;
+    background-color: var(--md-sys-color-primary);
+}
+
+.header-text {
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+
+.task {
+    margin: 10px;
+    padding: 10px;
+    width: 95%;
+    background-color: lightcyan;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+}
+
+.create-task {
+    border: 1px dotted lightcyan;
+    background-color: transparent;
+}
+
+h1 {
+    font-size: calc(min(1rem + 5vw, 15vh));
+}
+
+h4 {
+    font-size: calc(min(0.5rem + 2vw, 5vh));
+}
+
+.fa-minus {
+    color: green;
+    padding: 10px;
+}
+
+.fa-equals {
+    color: yellow;
+    padding: 10px;
+}
+
+.fa-arrow-up {
+    color: orange;
+    padding: 12px;
+}
+
+.fa-arrows-up-to-line {
+    color: red;
+    padding: 7px;
+}
+
+.search {
+    width: 20vw;
+    padding: 5px;
+}
