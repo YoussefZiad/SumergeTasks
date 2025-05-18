@@ -214,12 +214,12 @@ const loadList = () => {
     // Initialize the HTML for the create task form and the task lists
     let pendingTasksHTML = `
         <div id="create-task" class="task create-task">
-            <form>
+            <form id="create-task-form">
                 <input class="create-task" type="text" id="new-task" value="${newTaskName}" placeholder="Enter new task" required>
                 <button class="create-task" type="button" id="change-priority">
                     <i class="${priorityToIconClass.get(newPriority)} p-0"></i>
                 </button>
-                <button class="create-task" type="button" id="add-task">+</button>
+                <input class="create-task" type="submit" id="add-task" value="+">
             </form>
         </div>`;
     // Initialize the HTML for the completed tasks
@@ -280,7 +280,7 @@ const loadList = () => {
     }
 
     // Setup the click event for the add task button
-    document.getElementById('add-task').addEventListener('click', () => {
+    document.getElementById('create-task-form').addEventListener('submit', () => {
         const taskTextbox = document.getElementById('new-task');
         // Prevent adding empty tasks
         if (taskTextbox.value === '') {
