@@ -1,14 +1,39 @@
-console.log('Loading tasks from localStorage...');
+require('dotenv').config();
 
-// Get task strings from local storage
-const pendingTasksString = localStorage.getItem('pendingTasks');
-const completedTasksString = localStorage.getItem('completedTasks');
+// These shouldn't be here, should be in a .env file
+const firebaseConfig = {
+    apiKey: "AIzaSyASbVScsdFFtPi_QVD243oK0Pv_pFnoN6I",
+    authDomain: "sumergetodo3.firebaseapp.com",
+    projectId: "sumergetodo3",
+    storageBucket: "sumergetodo3.firebasestorage.app",
+    messagingSenderId: "974027582750",
+    appId: "1:974027582750:web:eaa7448ae52eceea706d0f",
+    measurementId: "G-2SB118G4H3"
+};
 
-// Parse task strings into arrays
-const pendingTasks = pendingTasksString?
-    JSON.parse(pendingTasksString.split(',')) : [];
-const completedTasks = completedTasksString?
-    JSON.parse(completedTasksString.split(',')) : [];
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Initialize Cloud Firestore and get a reference to the service
+const db = firebase.firestore();
+
+console.log('Loading tasks from firebase...');
+
+// Load pending tasks from firestore
+const pendingTasks =[];
+await db.collection('pendingTasks').get().then((snapshot) => {
+    pendingTasks.push(...snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+}).catch((error) => {
+    console.error("Error getting pending tasks: ", error);
+});
+
+// Load completed tasks from firestore
+const completedTasks =[];
+await db.collection('completedTasks').get().then((snapshot) => {
+    completedTasks.push(...snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+}).catch((error) => {
+    console.error("Error getting completed tasks: ", error);
+});
 
 // Set up priority to icon class mapping
 const priorityToIconClass = new Map([
@@ -126,14 +151,29 @@ const setUpDnD = () => {
                     }
                 }
                 
-                // Update the local storage with the new task arrays
-                localStorage.setItem('pendingTasks', JSON.stringify(pendingTasks));
-                localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
-                // Reload the task list to reflect the changes
-                loadList();
-                console.log('Moved task:', draggedElement.id, 
-                    e.clientY >= targetElementBounds.top + targetElementBounds.height / 2?'after':'before',
-                    targetElement.id);
+                // Update firestore
+                const {id: taskId, ...taskData} = draggedTask;
+                let createPromise = null;
+                let deletePromise = null;
+                if(draggedElement.id.startsWith('pending-task')) {
+                    createPromise = db.collection('pendingTasks').doc(taskId).set(taskData);
+                    deletePromise = db.collection('completedTasks').doc(taskId).delete();
+                }
+                else {
+                    createPromise = db.collection('completedTasks').doc(taskId).set(taskData);
+                    deletePromise = db.collection('pendingTasks').doc(taskId).delete();
+                }
+
+                // Wait for both promises to resolve then reload the list
+                Promise.all([createPromise, deletePromise]).then(() => {
+                    loadList();
+                    console.log('Moved task:', draggedElement.id, 
+                        e.clientY >= targetElementBounds.top + targetElementBounds.height / 2?'after':'before',
+                        targetElement.id);
+                }).catch((error) => {
+                    console.error("Error moving task: ", error);
+                });
+                
             }
         });
     }
@@ -142,36 +182,46 @@ const setUpDnD = () => {
 // Function to mark a task as complete
 const markComplete = (index) => {
     console.log('Marking task as complete:', index);
+
+    const {id: completedTaskId, ...completedTaskData} = pendingTasks[index];
     // Insert the task in the completed tasks array
     completedTasks.push(pendingTasks[index]);
     // Remove the task from the pending tasks array
     pendingTasks.splice(index, 1);
-    // Update the local storage with the new task arrays
-    localStorage.setItem('pendingTasks', JSON.stringify(pendingTasks));
-    localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+    // Update firestore
+    db.collection('completedTasks').doc(completedTaskId).set(completedTaskData);
+    db.collection('pendingTasks').doc(completedTaskId).delete();
 }
 
 // Function to return a task to the pending tasks list
 const returnToPending = (index) => {
     console.log('Returning task to pending:', index);
+
+    const {id: pendingTaskId, ...pendingTaskData} = completedTasks[index];
     // Insert the task in the pending tasks array
     pendingTasks.push(completedTasks[index]);
     // Remove the task from the completed tasks array
     completedTasks.splice(index, 1);
-    // Update the local storage with the new task arrays
-    localStorage.setItem('pendingTasks', JSON.stringify(pendingTasks));
-    localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+    // Update firestore
+    db.collection('pendingTasks').doc(pendingTaskId).set(pendingTaskData);
+    db.collection('completedTasks').doc(pendingTaskId).delete();
 }
 
 // Function to add a new task
-const addTask = (name, priority) => {
+const addTask = async (name, priority) => {
     console.log('Adding task:', name, priority);
     const task = {
         name: name,
         priority: priority
     };
-    pendingTasks.push(task);
-    localStorage.setItem('pendingTasks', JSON.stringify(pendingTasks));
+    try{
+        let docRef = await db.collection('pendingTasks').add(task);
+        console.log("Document written: ", JSON.stringify(docRef));
+        pendingTasks.push({id: docRef.id, ...task});
+    }
+    catch (error) {
+        console.error("Error adding document: ", error);
+    }
 }
 
 // Function to search for tasks with a term and an option to scroll to the first search result (true/false)
@@ -280,7 +330,8 @@ const loadList = () => {
     }
 
     // Setup the click event for the add task button
-    document.getElementById('create-task-form').addEventListener('submit', () => {
+    document.getElementById('create-task-form').addEventListener('submit', (e) => {
+        e.preventDefault();
         const taskTextbox = document.getElementById('new-task');
         // Prevent adding empty tasks
         if (taskTextbox.value === '') {
@@ -288,8 +339,11 @@ const loadList = () => {
             setTimeout(() => taskTextbox.style.border = '1px dotted lightcyan', 350);
             return;
         }
-        addTask(taskTextbox.value, newPriority);
-        loadList();
+        document.getElementById('add-task').value = '...';
+        document.getElementById('add-task').disabled = true;
+        addTask(taskTextbox.value, newPriority).then(() => {
+            loadList();
+        });
     });
     
     // Setup the click event for the change priority button
