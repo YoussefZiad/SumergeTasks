@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 // These shouldn't be here, should be in a .env file
 const firebaseConfig = {
     apiKey: "AIzaSyASbVScsdFFtPi_QVD243oK0Pv_pFnoN6I",
