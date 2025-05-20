@@ -135,6 +135,7 @@ const setUpDnD = () => {
                         else if(pendingTasks[targetElementIndex].priority > (pendingTasks[targetElementIndex-1]?.priority || 3)){
                             pendingTasks[targetElementIndex].priority = pendingTasks[targetElementIndex-1].priority;
                         }
+                        draggedTask.priority = pendingTasks[targetElementIndex].priority;
                     }
                     else {
                         // Insert the dragged task before the target element
@@ -146,6 +147,7 @@ const setUpDnD = () => {
                         else if(completedTasks[targetElementIndex].priority > (completedTasks[targetElementIndex-1]?.priority || 3)){
                             completedTasks[targetElementIndex].priority = completedTasks[targetElementIndex-1].priority;
                         }
+                        draggedTask.priority = completedTasks[targetElementIndex].priority
                     }
                 }
                 
