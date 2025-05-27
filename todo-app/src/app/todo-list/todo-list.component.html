@@ -1,1 +1,78 @@
-<p>todo-list works!</p>
+<div class="container-fluid main-container">
+    <div class="row">
+        <div class="col">
+            <app-header></app-header>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col d-flex justify-content-center align-items-center flex-row p-3">
+            <form action="javascript:void(0)">
+                <input id="search"
+                 class="search" 
+                 type="search" 
+                 id="task-search"
+                 [formControl]="searchTerm"
+                 placeholder="Search for tasks by name..." />
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="todo-list-container">
+                <h4 class="header-text">Pending Tasks</h4>
+                <ul id="pending-tasks">
+                    <app-add-task 
+                        (createTask)="onCreateTask($event)">
+                    </app-add-task>
+                    @if(fetchingTasksError()){
+                        <p class="fallback-text">An error occurred while loading tasks. Please try again later.</p>
+                    }
+                    @else if(fetchingTasks()){
+                        <div class="d-flex justify-content-center align-items-center"> 
+                            <div class="loader"></div>
+                        </div>
+                    }
+                    @else{    
+                        @for(task of pendingTasks(); track task.id){
+                            <app-task 
+                                [searchTerm]="searchTermSig() || ''"
+                                [isUpdating]="isUpdating() === task.id"
+                                [task]="task" 
+                                (toggleComplete)="onToggleCompleteness($event)" 
+                                ></app-task>
+                        }@empty {
+                            <p class="fallback-text">No pending tasks... Yay!</p>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="todo-list-container">
+                <h4 class="header-text">Completed Tasks</h4>
+                <ul id="completed-tasks">
+                    @if(fetchingTasksError()){
+                        <p class="fallback-text">An error occurred while loading tasks. Please try again later.</p>
+                    }
+                    @else if(fetchingTasks()){
+                        <div class="d-flex justify-content-center align-items-center"> 
+                            <div class="loader"></div>
+                        </div>
+                    }
+                    @else{   
+                        @for(task of completedTasks(); track task.id){
+                            <app-task
+                                [searchTerm]="searchTermSig() || ''"
+                                [isUpdating]="isUpdating() === task.id"
+                                [task]="task" 
+                                (toggleComplete)="onToggleCompleteness($event)" 
+                                ></app-task>
+                        } @empty {
+                            <p class="fallback-text">Mark a task as complete to see it over here!</p>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

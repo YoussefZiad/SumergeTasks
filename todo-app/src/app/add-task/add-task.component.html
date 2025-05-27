@@ -1,0 +1,9 @@
+<div id="create-task" class="task create-task">
+    <form id="create-task-form" (ngSubmit)="onCreateTask($event)" [formGroup]="newTaskForm">
+        <input class="create-task" type="text" id="new-task" formControlName="newTaskName" placeholder="Enter new task" required>
+        <button class="create-task" type="button" id="change-priority" (click)="onChangePriority()">
+            <fa-icon [class]="newTaskPriorityIcon() + ' p-0'" [icon]="newTaskPriorityIcon()"></fa-icon>
+        </button>
+        <input class="create-task" type="submit" id="add-task" value="+">
+    </form>
+</div>

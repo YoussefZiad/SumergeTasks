@@ -1,0 +1,23 @@
+.main-container {
+    background-color: skyblue;
+    min-height: 100vh;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.todo-list-container {
+    background-color: lightblue;
+    margin: 2%;
+    padding: 2%;
+    border-radius: 10px;
+    height: auto;
+}
+
+.search {
+    width: 20vw;
+    padding: 5px;
+}
+

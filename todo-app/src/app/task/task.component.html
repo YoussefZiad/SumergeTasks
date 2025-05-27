@@ -1,0 +1,15 @@
+<li [id]="`pending-task-${task().id}`" [draggable]="actionAllowed">
+    <div [class]="`task${!this.actionAllowed? ' action-forbidden':''}${this.isSearchMatch()? ' highlighted':''}`">
+        <label [for]="`pending-task-${task().id}`">{{task().name}}</label>
+        <div class="d-inline-flex flex-row align-items-center">
+            <fa-icon [class]="priorityIcon()" [icon]="['fas', priorityIcon()]"></fa-icon>
+            <button 
+                class="btn btn-outline-primary"
+                type="button" 
+                [id]="`pending-task-${task().id}`"
+                (click)="onToggleCompleteness()"
+                [disabled]="!actionAllowed">
+            {{task().completed? "Mark Complete":"Return To Pending"}}</button>
+        </div>
+    </div>
+</li>
