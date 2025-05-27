@@ -24,6 +24,7 @@ export class AddTaskComponent implements OnInit {
   newTaskPriorityIcon = signal<string>(priorityToIconMap.get(
     this.newTaskForm.controls.newTaskPriority.value || 0) || '');
   createTask = output<Task>();
+  validationError = signal<boolean>(false);
 
   ngOnInit(): void {
     const storedForm = window.sessionStorage.getItem('newTaskForm');
@@ -52,6 +53,12 @@ export class AddTaskComponent implements OnInit {
 
   onCreateTask($event: Event) {
     $event.preventDefault();
+
+    if(this.newTaskForm.invalid){
+      this.validationError.set(true);
+      setTimeout(() => {this.validationError.set(false)}, 250);
+      return;
+    }
 
     this.createTask.emit(new Task(
       '', 

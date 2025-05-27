@@ -4,6 +4,10 @@
     margin-left: 2px;
 }
 
+.create-task-invalid {
+    border: 1px dotted red;
+}
+
 input[type="submit"] {
     font-weight: bold;
     font-size: 17px;
