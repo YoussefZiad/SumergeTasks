@@ -25,9 +25,9 @@
 
 .avatar {
     display: flex;
-    width: max(4vw, 8vh);
-    height: max(4vw, 8vh);
-    border-radius: max(2vw, 4vh);
+    width: max(3vw, 8vh);
+    height: max(3vw, 8vh);
+    border-radius: max(1.5vw, 4vh);
     justify-content: center;
     align-items: center;
     background-color: skyblue;
@@ -46,4 +46,9 @@ label,
 p,
 .btn {
     font-size: calc(min(0.65rem + 0.5vw, 20vh));
+}
+
+.avatar-text {
+    color: white;
+    margin-top: 10%;
 }

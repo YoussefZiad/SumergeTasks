@@ -4,6 +4,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { priorityToIconMap } from '../utilities/priority.icons';
 import { Task } from '../models/task.model';
 import { debounce, debounceTime } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-add-task',
@@ -25,6 +26,7 @@ export class AddTaskComponent implements OnInit {
     this.newTaskForm.controls.newTaskPriority.value || 0) || '');
   createTask = output<Task>();
   validationError = signal<boolean>(false);
+  private authService = inject(AuthService);
 
   ngOnInit(): void {
     const storedForm = window.sessionStorage.getItem('newTaskForm');
@@ -64,6 +66,8 @@ export class AddTaskComponent implements OnInit {
       '', 
       this.newTaskForm.controls.newTaskName.value || '', 
       this.newTaskForm.controls.newTaskPriority.value || 0,
+      false,
+      this.authService.currentUser.getValue()?.email
     ));
   }
 }

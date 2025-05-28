@@ -10,6 +10,9 @@
                 (click)="onToggleCompleteness()"
                 [disabled]="!actionAllowed">
             {{task().completed? "Mark Complete":"Return To Pending"}}</button>
+            @if(task().userEmail){
+                <div class="avatar"><h4 class="avatar-text">{{task().userEmail?.at(0)?.toUpperCase()}}</h4></div>
+            }
         </div>
     </div>
 </li>

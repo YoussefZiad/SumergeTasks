@@ -4,6 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { catchError, map, tap } from "rxjs";
 import { FirestoreDocs } from "../models/firestoreDocs.model";
+import { AuthService } from "./auth.service";
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,7 @@ export class TaskService {
     pendingTasks = signal<Task[]>([]);
     completedTasks = signal<Task[]>([]);
     private _httpClient = inject(HttpClient);
+    private authService = inject(AuthService);
 
     loadTasks() {
         return this._httpClient.get<FirestoreDocs>(
@@ -24,8 +26,10 @@ export class TaskService {
                 )
             ),
             tap((tasks: Task[]) => {
-                this.pendingTasks.set(tasks.filter(task => !task.completed));
-                this.completedTasks.set(tasks.filter(task => task.completed));
+                this.pendingTasks.set(tasks.filter(task => !task.completed && 
+                    task.userEmail === this.authService.currentUser.getValue()?.email));
+                this.completedTasks.set(tasks.filter(task => task.completed && 
+                    task.userEmail === this.authService.currentUser.getValue()?.email));
                 console.log('Pending Tasks:', this.pendingTasks());
                 console.log('Completed Tasks:', this.completedTasks());
             })
