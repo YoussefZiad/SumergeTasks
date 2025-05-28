@@ -34,12 +34,16 @@
                     }
                     @else{    
                         @for(task of pendingTasks(); track task.id){
-                            <app-task 
+                            @defer (on viewport) {
+                                <app-task 
                                 [searchTerm]="searchTermSig() || ''"
                                 [isUpdating]="isUpdating() === task.id"
                                 [task]="task" 
                                 (toggleComplete)="onToggleCompleteness($event)" 
                                 ></app-task>
+                            }@placeholder{
+                                <div class="placeholder-task"></div>
+                            }
                         }@empty {
                             <p class="fallback-text">No pending tasks... Yay!</p>
                         }
