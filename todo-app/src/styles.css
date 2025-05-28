@@ -51,4 +51,5 @@ p,
 .avatar-text {
     color: white;
     margin-top: 10%;
+    font-size: calc(min(0.65rem + 1vw, 20vh));
 }
