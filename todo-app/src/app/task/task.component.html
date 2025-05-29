@@ -9,7 +9,7 @@
                 [id]="`pending-task-${task().id}`"
                 (click)="onToggleCompleteness()"
                 [disabled]="!actionAllowed">
-            {{task().completed? "Mark Complete":"Return To Pending"}}</button>
+            {{task().completed? "Return To Pending":"Mark Complete"}}</button>
         </div>
     </div>
 </li>
