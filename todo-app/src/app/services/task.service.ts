@@ -25,8 +25,10 @@ export class TaskService {
                 )
             ),
             tap((tasks: Task[]) => {
-                this.pendingTasks.set(tasks.filter(task => !task.completed));
-                this.completedTasks.set(tasks.filter(task => task.completed));
+                this.pendingTasks.set(tasks.filter(task => !task.completed)
+                    .toSorted((a, b) => b.priority-a.priority));
+                this.completedTasks.set(tasks.filter(task => task.completed)
+                    .toSorted((a, b) => b.priority-a.priority));
                 console.log('Pending Tasks:', this.pendingTasks());
                 console.log('Completed Tasks:', this.completedTasks());
             })
@@ -45,12 +47,12 @@ export class TaskService {
             task = this.pendingTasks()[pendingTaskIndex].cloneTask();
             task.completed = true;
             this.pendingTasks.set(this.pendingTasks().toSpliced(pendingTaskIndex, 1));
-            this.completedTasks.set([...this.completedTasks(), task]);
+            this.completedTasks.set([...this.completedTasks(), task].toSorted((a, b) => b.priority - a.priority));
         } else if (completedTaskIndex != -1) {
             task = this.completedTasks()[completedTaskIndex].cloneTask();
             task.completed = false;
             this.completedTasks.set(this.completedTasks().toSpliced(completedTaskIndex, 1));
-            this.pendingTasks.set([...this.pendingTasks(), task as Task]);
+            this.pendingTasks.set([...this.pendingTasks(), task].toSorted((a, b) => b.priority - a.priority));
         } else {
             throw new Error(`Task with ID ${taskId} not found in either pending or completed tasks.`);
         }
@@ -77,7 +79,7 @@ export class TaskService {
     createTask(task: Task) {
         const originalPending = [...this.pendingTasks()];
 
-        this.pendingTasks.set([...this.pendingTasks(), task]);
+        this.pendingTasks.set([...this.pendingTasks(), task].toSorted((a, b) => b.priority - a.priority));
 
         return this._httpClient.post<Task>(
             `${environment.firestoreURL}/documents/tasks`,
