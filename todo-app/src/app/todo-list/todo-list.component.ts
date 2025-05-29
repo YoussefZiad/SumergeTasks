@@ -6,6 +6,7 @@ import { TaskService } from '../services/task.service';
 import { TaskComponent } from '../task/task.component';
 import { AddTaskComponent } from '../add-task/add-task.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-todo-list',
@@ -16,14 +17,19 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 export class TodoListComponent implements OnInit{
   
   private taskService = inject(TaskService);
+  private authService = inject(AuthService);
   pendingTasks = this.taskService.pendingTasks.asReadonly();
   completedTasks = this.taskService.completedTasks.asReadonly();
+  filteredPendingTasks = computed(() => this.pendingTasks().filter(this.filterFn()));
+  filteredCompletedTasks = computed(() => this.completedTasks().filter(this.filterFn()));
   fetchingTasks = signal<boolean>(true);
   fetchingTasksError = signal<string>('');
   destroyRef = inject(DestroyRef);
   isUpdating = signal<string>('');
   searchTerm = new FormControl<string>('');
   searchTermSig = signal<string>('');
+  filterDropdown = new FormControl<'None' | 'My Tasks' | 'Search Results'>('None');
+  filterFn = signal<(task: Task) => boolean>((task: Task) => true);
 
   ngOnInit(): void {
     const loadTasksSubscription = this.taskService.loadTasks().subscribe({
@@ -40,9 +46,24 @@ export class TodoListComponent implements OnInit{
       this.searchTermSig.set(value || '');
     });
 
+    const dropdownSubscription = this.filterDropdown.valueChanges.subscribe(value => {
+      switch(value){
+        case 'My Tasks':
+          this.filterFn.set((task) => task.userEmail === this.authService.currentUser.getValue()?.email);
+          break;
+        case 'Search Results':
+          this.filterFn.set((task) => task.name.toLowerCase().includes(this.searchTermSig().toLowerCase()));
+          break;
+        default:
+          this.filterFn.set((task) => true)
+          break;
+      }
+    })
+
     this.destroyRef.onDestroy(() => {
       loadTasksSubscription.unsubscribe();
       searchSubscription.unsubscribe();
+      dropdownSubscription.unsubscribe();
     });
   }
 

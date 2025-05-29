@@ -14,7 +14,6 @@ export class TaskService {
     pendingTasks = signal<Task[]>([]);
     completedTasks = signal<Task[]>([]);
     private _httpClient = inject(HttpClient);
-    private authService = inject(AuthService);
 
     loadTasks() {
         return this._httpClient.get<FirestoreDocs>(
@@ -26,10 +25,8 @@ export class TaskService {
                 )
             ),
             tap((tasks: Task[]) => {
-                this.pendingTasks.set(tasks.filter(task => !task.completed && 
-                    task.userEmail === this.authService.currentUser.getValue()?.email));
-                this.completedTasks.set(tasks.filter(task => task.completed && 
-                    task.userEmail === this.authService.currentUser.getValue()?.email));
+                this.pendingTasks.set(tasks.filter(task => !task.completed));
+                this.completedTasks.set(tasks.filter(task => task.completed));
                 console.log('Pending Tasks:', this.pendingTasks());
                 console.log('Completed Tasks:', this.completedTasks());
             })

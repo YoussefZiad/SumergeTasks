@@ -47,13 +47,17 @@ export class AuthService{
     autoLogin(): boolean{
         const storedUser = localStorage.getItem('currentUser');
         if(storedUser) {
-            const parsedUser = JSON.parse(storedUser)
-            this.currentUser.next(new User(
+            const parsedUser = JSON.parse(storedUser);
+            const newCurrentUser = new User(
                 parsedUser['_email'], 
                 parsedUser['_id'],
                 parsedUser['_token'],
                 new Date(parsedUser['_tokenExpirationDate'])
-            ));
+            );
+            if(!newCurrentUser.token){
+                return false;
+            }
+            this.currentUser.next(newCurrentUser);
             console.log(this.currentUser.getValue());
             return true;
         }
