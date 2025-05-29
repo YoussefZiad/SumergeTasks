@@ -6,12 +6,15 @@ export class Task {
     private _name: string;
     private _priority: number;
     private _completed: boolean = false;
+    private _userEmail?: string;
 
-    constructor(id: string, name: string, priority: number, completed: boolean = false) {
+    constructor(id: string, name: string, priority: number, completed: boolean = false, userEmail?: string) {
         this._id = id;
         this._name = name;
         this._priority = priority;
         this._completed = completed;
+        if(userEmail)
+            this._userEmail = userEmail;
     }
 
     get id(): string {
@@ -28,6 +31,10 @@ export class Task {
 
     get completed(): boolean {
         return this._completed;
+    }
+
+    get userEmail(): string | undefined {
+        return this._userEmail;
     }
 
     set id(newId: string) {
@@ -49,18 +56,28 @@ export class Task {
         this._completed = isCompleted;
     }
 
+    set userEmail(userEmail: string) {
+        this._userEmail = userEmail;
+    }
+
     cloneTask() {
+        if(this.userEmail)
+            return new Task(this.id, this.name, this.priority, this.completed, this.userEmail);
         return new Task(this.id, this.name, this.priority, this.completed);
     }
 
     static fromFirestoreDoc(doc: FirestoreDoc): Task {
         const fields = doc.fields;
-        return new Task(
-            doc.name.split('/').pop() || '', // Extracting ID from the document name
-            fields['name'].stringValue || '',
-            fields['priority'].integerValue ? parseInt(fields['priority'].integerValue) : 0,
-            fields['completed'].booleanValue || false
-        );
+
+        const id = doc.name.split('/').pop() || ''; // Extracting ID from the document name
+        const name = fields['name'].stringValue || '';
+        const priority = fields['priority'].integerValue ? parseInt(fields['priority'].integerValue) : 0;
+        const completed = fields['completed'].booleanValue || false;
+        const userEmail = fields['userEmail']?.stringValue;
+
+        if(userEmail)
+            return new Task(id, name , priority, completed, userEmail);
+        return new Task(id, name , priority, completed);
     }
 
     static toFirestoreDoc(task: Task): FirestoreDoc {
@@ -69,7 +86,8 @@ export class Task {
             fields: {
                 name: { stringValue: task.name },
                 priority: { integerValue: task.priority },
-                completed: { booleanValue: task.completed }
+                completed: { booleanValue: task.completed },
+                ...(task.userEmail? { userEmail: { stringValue: task.userEmail } }:{})
             },
             createTime: new Date().toISOString(),
             updateTime: new Date().toISOString()

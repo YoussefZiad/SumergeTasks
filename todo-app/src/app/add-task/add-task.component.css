@@ -14,6 +14,10 @@ input[type="submit"] {
     padding-top: 0px;
 }
 
+input[type="text"] {
+    font-size: calc(min(0.65rem + 0.5vw, 20vh));
+}
+
 .task {
     margin: 10px;
     padding: 10px;

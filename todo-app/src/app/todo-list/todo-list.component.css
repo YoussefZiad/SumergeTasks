@@ -21,3 +21,11 @@ ul {
     padding: 5px;
 }
 
+.placeholder-task{
+    margin: 10px;
+    width: 95%;
+    background-color: lightcyan;
+    border-radius: 5px;
+    opacity: 0.5;
+}
+

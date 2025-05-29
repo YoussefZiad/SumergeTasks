@@ -23,10 +23,33 @@
     text-align: center;
 }
 
+.avatar {
+    display: flex;
+    width: max(3vw, 8vh);
+    height: max(3vw, 8vh);
+    border-radius: max(1.5vw, 4vh);
+    justify-content: center;
+    align-items: center;
+    background-color: skyblue;
+    margin: 5px;
+}
+
 h1 {
-    font-size: calc(min(1rem + 5vw, 15vh));
+    font-size: calc(min(1rem + 5vw, 40vh));
 }
 
 h4 {
-    font-size: calc(min(0.5rem + 2vw, 5vh));
+    font-size: calc(min(0.5rem + 2vw, 25vh));
+}
+
+label,
+p,
+.btn {
+    font-size: calc(min(0.65rem + 0.5vw, 20vh));
+}
+
+.avatar-text {
+    color: white;
+    margin-top: 10%;
+    font-size: calc(min(0.65rem + 1vw, 20vh));
 }

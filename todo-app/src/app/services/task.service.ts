@@ -4,6 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { catchError, map, tap } from "rxjs";
 import { FirestoreDocs } from "../models/firestoreDocs.model";
+import { AuthService } from "./auth.service";
 
 @Injectable({
     providedIn: 'root'
