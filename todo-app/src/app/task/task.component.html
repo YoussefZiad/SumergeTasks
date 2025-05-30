@@ -11,7 +11,7 @@
                 [disabled]="!actionAllowed">
             {{task().completed? "Return To Pending":"Mark Complete"}}</button>
             @if(task().userEmail){
-                <div class="avatar"><h4 class="avatar-text">{{task().userEmail?.at(0)?.toUpperCase()}}</h4></div>
+                <div class="avatar" [title]="task().userEmail"><h4 class="avatar-text">{{task().userEmail?.at(0)?.toUpperCase()}}</h4></div>
             }
         </div>
     </div>
