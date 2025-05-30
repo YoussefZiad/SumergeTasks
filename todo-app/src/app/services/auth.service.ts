@@ -11,7 +11,7 @@ import { Router } from "@angular/router";
 export class AuthService{
     private httpClient = inject(HttpClient);
     currentUser = new BehaviorSubject<User | null>(null);
-    tokenTimeout: NodeJS.Timeout | undefined;
+    tokenTimeout: ReturnType<typeof setTimeout> | undefined;
     private router = inject(Router);
 
     signup(email: string, password: string){
@@ -68,12 +68,12 @@ export class AuthService{
         this.currentUser.next(null);
         window.localStorage.clear();
         if(this.tokenTimeout)
-            this.tokenTimeout.close();
+            this.tokenTimeout = undefined;
         this.router.navigate(['/']);
     }
 
     autoLogout(expirationDate: Date) {
-        const timeToExpiration = new Date().getTime() - expirationDate.getTime();
+        const timeToExpiration = expirationDate.getTime() - new Date().getTime();
         this.tokenTimeout = setTimeout(() => this.logout(), timeToExpiration);
     }
 

@@ -1,10 +1,7 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { error } from 'console';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { User } from '../models/auth.model';
-import { filter } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
