@@ -3,12 +3,11 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    min-width: 40vw;
     padding: 4px;
 }
 
 .loginForm {
-    background-color: lightcyan;
+    background-color: lightgray;
     padding: 10px;
     min-height: 50vh;
     min-width: 100%;
@@ -20,5 +19,13 @@
 
 .row {
     min-height: 100vh;
-    background-color: skyblue;
+    background-color: black;
+}
+
+.btn-link {
+    color: black;
+}
+
+.btn-link:hover {
+    color: white;
 }

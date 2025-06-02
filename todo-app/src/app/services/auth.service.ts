@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
+import { DestroyRef, inject, Injectable } from "@angular/core";
 import { environment } from "../../environments/environment";
 import { AuthResponse, User } from "../models/auth.model";
 import { BehaviorSubject, tap } from "rxjs";
@@ -13,6 +13,7 @@ export class AuthService{
     currentUser = new BehaviorSubject<User | null>(null);
     tokenTimeout: ReturnType<typeof setTimeout> | undefined;
     private router = inject(Router);
+    private destroyRef = inject(DestroyRef);
 
     signup(email: string, password: string){
         return this.httpClient.post<AuthResponse>(
@@ -45,21 +46,24 @@ export class AuthService{
     }
 
     autoLogin(): boolean{
-        const storedUser = localStorage.getItem('currentUser');
-        if(storedUser) {
-            const parsedUser = JSON.parse(storedUser);
-            const newCurrentUser = new User(
-                parsedUser['_email'], 
-                parsedUser['_id'],
-                parsedUser['_token'],
-                new Date(parsedUser['_tokenExpirationDate'])
-            );
-            if(!newCurrentUser.token){
-                return false;
+        if(typeof window !== 'undefined' && window.localStorage){
+            const storedUser = localStorage.getItem('currentUser');
+            if(storedUser) {
+                const parsedUser = JSON.parse(storedUser);
+                const newCurrentUser = new User(
+                    parsedUser['_email'], 
+                    parsedUser['_id'],
+                    parsedUser['_token'],
+                    new Date(parsedUser['_tokenExpirationDate'])
+                );
+                if(!newCurrentUser.token){
+                    return false;
+                }
+                this.currentUser.next(newCurrentUser);
+                console.log(this.currentUser.getValue());
+                return true;
             }
-            this.currentUser.next(newCurrentUser);
-            console.log(this.currentUser.getValue());
-            return true;
+            return false;
         }
         return false;
     }
@@ -75,6 +79,7 @@ export class AuthService{
     autoLogout(expirationDate: Date) {
         const timeToExpiration = expirationDate.getTime() - new Date().getTime();
         this.tokenTimeout = setTimeout(() => this.logout(), timeToExpiration);
+        this.destroyRef.onDestroy(() => clearTimeout(this.tokenTimeout));
     }
 
     createAuthenticatedUser(authData: AuthResponse){

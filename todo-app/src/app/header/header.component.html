@@ -1,13 +1,13 @@
 <div class="header-container">
     <div class="user-data">
         <div class="d-flex flex-row justify-content-end align-items-center">
-            <div class="avatar"><h4 id="avatar-text" class="avatar-text">{{currentUser()?.email?.at(0)?.toUpperCase()}}</h4></div>
+            <div id="avatar" class="avatar"><h4 id="avatar-text" class="avatar-text">{{currentUser()?.email?.at(0)?.toUpperCase()}}</h4></div>
             <div class="d-flex flex-column align-items-center">
                 <p id="email-display">{{currentUser()?.email}}</p>
                 <button id="logout-button" class="btn btn-link p-0 m-0" (click)="logout()">Logout</button>
             </div>          
         </div>    
     </div>
-    <h1 class="header-text">Todo List</h1>
-    <h4 class="header-text">Align your daily tasks!</h4>
+    <h1 id="title" class="header-text">Todo List</h1>
+    <h4 id="subtitle" class="header-text">Align your daily tasks!</h4>
 </div>

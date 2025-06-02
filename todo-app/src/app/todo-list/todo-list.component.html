@@ -1,7 +1,7 @@
 <div class="container-fluid main-container">
     <div class="row">
         <div class="col">
-            <app-header></app-header>
+            <app-header id="app-header"></app-header>
         </div>
     </div>
     <div class="row">
@@ -10,7 +10,6 @@
                 <input id="search"
                  class="search" 
                  type="search" 
-                 id="task-search"
                  [formControl]="searchTerm"
                  placeholder="Search for tasks by name..." />
             </form>
@@ -27,24 +26,24 @@
     <div class="row">
         <div class="col-6">
             <div class="todo-list-container">
-                <h4 class="header-text">Pending Tasks</h4>
+                <h4 class="header-text" id="pending-tasks-header">Pending Tasks</h4>
                 <ul id="pending-tasks">
-                    <app-add-task 
+                    <app-add-task id="add-task"
                         (createTask)="onCreateTask($event)">
                     </app-add-task>
                     @if(fetchingTasksError()){
-                        <p class="fallback-text">An error occurred while loading tasks. Please try again later.</p>
+                        <p id="pending-load-error" class="fallback-text">An error occurred while loading tasks. Please try again later.</p>
                     }
                     @else if(fetchingTasks()){
                         <div class="d-flex justify-content-center align-items-center"> 
-                            <div class="loader"></div>
+                            <div class="loader" id="pending-loader"></div>
                         </div>
                     }
                     @else{    
                         @for(task of filteredPendingTasks(); track task.id){
                             @defer (on viewport) {
-                                <app-task 
-                                [searchTerm]="searchTermSig() || ''"
+                                <app-task [id]="`pending-task-comp-${task.id}`"
+                                [searchTerm]="searchTerm.value || ''"
                                 [isUpdating]="isUpdating() === task.id"
                                 [task]="task" 
                                 (toggleComplete)="onToggleCompleteness($event)" 
@@ -53,7 +52,7 @@
                                 <div class="placeholder-task"></div>
                             }
                         }@empty {
-                            <p class="fallback-text">No pending tasks... Yay!</p>
+                            <p id="empty-pending-tasks" class="fallback-text">No pending tasks...</p>
                         }
                     }
                 </ul>
@@ -61,26 +60,31 @@
         </div>
         <div class="col-6">
             <div class="todo-list-container">
-                <h4 class="header-text">Completed Tasks</h4>
+                <h4 class="header-text" id="completed-tasks-header">Completed Tasks</h4>
                 <ul id="completed-tasks">
                     @if(fetchingTasksError()){
-                        <p class="fallback-text">An error occurred while loading tasks. Please try again later.</p>
+                        <p id="completed-load-error" class="fallback-text">An error occurred while loading tasks. Please try again later.</p>
                     }
                     @else if(fetchingTasks()){
                         <div class="d-flex justify-content-center align-items-center"> 
-                            <div class="loader"></div>
+                            <div class="loader" id="completed-loader"></div>
                         </div>
                     }
                     @else{   
                         @for(task of filteredCompletedTasks(); track task.id){
-                            <app-task
-                                [searchTerm]="searchTermSig() || ''"
+                            @defer (on viewport) {
+                                <app-task [id]="`completed-task-comp-${task.id}`"
+                                [searchTerm]="searchTerm.value || ''"
                                 [isUpdating]="isUpdating() === task.id"
                                 [task]="task" 
                                 (toggleComplete)="onToggleCompleteness($event)" 
                                 ></app-task>
+                            }
+                            @placeholder {
+                                <div id="placeholder-task" class="placeholder-task"></div>
+                            } 
                         } @empty {
-                            <p class="fallback-text">Mark a task as complete to see it over here!</p>
+                            <p id="empty-completed-tasks" class="fallback-text">No completed tasks...</p>
                         }
                     }
                 </ul>

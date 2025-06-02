@@ -191,8 +191,6 @@ describe('Auth Service Tests' , () => {
                 mockExpiryDate
             ))
 
-            authService.tokenTimeout = setTimeout(() => null, +mockExpiresIn*1000);
-
         });
         
         it('should log user out', () => {

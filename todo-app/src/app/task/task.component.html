@@ -1,17 +1,16 @@
 <li [id]="`pending-task-${task().id}`" [draggable]="actionAllowed">
-    <div [class]="`task${!this.actionAllowed? ' action-forbidden':''}${this.isSearchMatch()? ' highlighted':''}`">
-        <label>{{task().name}}</label>
+    <div id="main-container" [class]="`task${!this.actionAllowed? ' action-forbidden':''}${this.isSearchMatch()? ' highlighted':''}`">
+        <label id="task-label">{{task().name}}</label>
         <div class="d-inline-flex flex-row align-items-center">
-            <fa-icon [class]="priorityIcon()" [icon]="['fas', priorityIcon()]"></fa-icon>
+            <fa-icon id="priority-icon" [class]="task().priority | priorityIcon" [icon]="['fas', task().priority | priorityIcon]"></fa-icon>
             <button 
                 class="btn btn-outline-primary"
                 type="button" 
                 [id]="`pending-task-${task().id}`"
                 (click)="onToggleCompleteness()"
-                [disabled]="!actionAllowed">
-            {{task().completed? "Return To Pending":"Mark Complete"}}</button>
+                [disabled]="!actionAllowed">{{task().completed?"Return To Pending":"Mark Complete"}}</button>
             @if(task().userEmail){
-                <div class="avatar" [title]="task().userEmail"><h4 class="avatar-text">{{task().userEmail?.at(0)?.toUpperCase()}}</h4></div>
+                <div id="avatar" class="avatar" [title]="task().userEmail"><h4 id="avatar-text" class="avatar-text">{{task().userEmail?.at(0)?.toUpperCase()}}</h4></div>
             }
         </div>
     </div>
