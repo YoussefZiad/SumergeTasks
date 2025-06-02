@@ -53,3 +53,5 @@ p,
     margin-top: 10%;
     font-size: calc(min(0.65rem + 1vw, 20vh));
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -1,11 +1,14 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { UIErrorMessagePipe } from '../pipes/ui-error-msg.pipe';
 
 @Component({
   selector: 'app-auth',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, UIErrorMessagePipe],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css'
 })
@@ -19,38 +22,24 @@ export class AuthComponent {
   router = inject(Router);
 
   loginForm = new FormGroup({
-    emailFC: new FormControl(''),
-    passwordFC: new FormControl('')
+    emailFC: new FormControl('', {validators: [
+      Validators.required, Validators.email
+    ]}),
+    passwordFC: new FormControl('', {validators: [
+      Validators.required, Validators.minLength(6)
+    ]})
   })
-
-  getErrorMessage(errCode: string){
-    switch(errCode){
-      case "EMAIL_EXISTS":
-        return "There already is an account with this email.";
-      case "TOO_MANY_ATTEMPTS_TRY_LATER":
-        return "You made too many successive attempts. Try again later.";
-      case "EMAIL_NOT_FOUND":
-        return "There is no account with this email. Please sign up first.";
-      case "INVALID_PASSWORD":
-        return "The password is incorrect!";
-      case "INVALID_LOGIN_CREDENTIALS":
-        return "Email or password is incorrect!";
-      default:
-        return "An unknown error has occurred. Please try again later.";
-    }
-  }
   
-
   onSubmit(){
     this.errorSig.set('');
     const formControls = this.loginForm.controls;
 
     if(this.loginForm.invalid){
       if(formControls.emailFC.invalid){
-        this.errorSig.set("Please enter a valid email address!");
+        this.errorSig.set("INVALID_EMAIL_FIELD");
       }
       else if(formControls.passwordFC.invalid){
-        this.errorSig.set("Please enter a valid password (min 6 characters)");
+        this.errorSig.set("INVALID_PASSWORD_FIELD");
       }
       return;
     }
@@ -70,12 +59,11 @@ export class AuthComponent {
     }
 
     const subscription = authObs.subscribe({
-      next: (value) => {
-        console.log(value);
+      next: (_) => {
         this.router.navigate(['/todo'])
       },
       error: (err) => {
-        this.errorSig.set(this.getErrorMessage(err?.error?.error?.message));
+        this.errorSig.set(err?.error?.error?.message || 'UNKNOWN');
         this.isLoading.set(false);
         console.log(err);
       },

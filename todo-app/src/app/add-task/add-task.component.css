@@ -32,20 +32,19 @@ input[type="text"] {
 
 .minus {
     color: green;
-    padding: 10px;
+    margin: 2px;
 }
 
 .equals {
     color: yellow;
-    padding: 10px;
+    margin: 2px;
 }
 
 .arrow-up {
     color: orange;
-    padding: 12px;
+    margin: 3px;
 }
 
 .arrows-up-to-line {
     color: red;
-    padding: 7px;
 }

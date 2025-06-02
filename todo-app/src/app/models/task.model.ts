@@ -46,8 +46,8 @@ export class Task {
     }
 
     set priority(newPriority: number) {
-        if(newPriority < 1 || newPriority > 5) {
-            throw new Error("Priority must be between 1 and 5.");
+        if(newPriority < 0 || newPriority > 3) {
+            throw new Error("Priority must be between 0 and 3.");
         }
         this._priority = newPriority;
     }

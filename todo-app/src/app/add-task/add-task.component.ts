@@ -1,18 +1,18 @@
-import { ChangeDetectorRef, Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { priorityToIconMap } from '../utilities/priority.icons';
 import { Task } from '../models/task.model';
 import { debounce, debounceTime } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { PriorityIconPipe } from "../pipes/priority-icon.pipe";
 
 @Component({
   selector: 'app-add-task',
-  imports: [ReactiveFormsModule, FontAwesomeModule],
+  imports: [ReactiveFormsModule, FontAwesomeModule, PriorityIconPipe],
   templateUrl: './add-task.component.html',
   styleUrl: './add-task.component.css'
 })
-export class AddTaskComponent implements OnInit {
+export class AddTaskComponent {
 
   newTaskForm = new FormGroup({
     newTaskName: new FormControl<string>('', {
@@ -22,35 +22,21 @@ export class AddTaskComponent implements OnInit {
       validators: [ Validators.required, Validators.min(0), Validators.max(3) ]
     })
   });
-  newTaskPriorityIcon = signal<string>(priorityToIconMap.get(
-    this.newTaskForm.controls.newTaskPriority.value || 0) || '');
   createTask = output<Task>();
   validationError = signal<boolean>(false);
   private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
 
-  ngOnInit(): void {
-    const storedForm = window.sessionStorage.getItem('newTaskForm');
+  get newTaskNameFC() {
+    return this.newTaskForm.controls.newTaskName;
+  }
 
-    if (storedForm) {
-      const parsedForm = JSON.parse(storedForm);
-      this.newTaskForm.setValue({
-        newTaskName: parsedForm.newTaskName || '',
-        newTaskPriority: parsedForm.newTaskPriority || 0
-      });
-      this.newTaskPriorityIcon.set(priorityToIconMap.get(
-        this.newTaskForm.controls.newTaskPriority.value || 0) || '');
-    }
-
-    this.newTaskForm.valueChanges.pipe(debounceTime(200)).subscribe(value => {
-      window.sessionStorage.setItem('newTaskForm', JSON.stringify(value));
-    });
+  get newTaskPriorityFC() {
+    return this.newTaskForm.controls.newTaskPriority;
   }
 
   onChangePriority() {
-    this.newTaskForm.controls.newTaskPriority.setValue(((
-      this.newTaskForm.controls.newTaskPriority.value||0)+1)%4);
-    this.newTaskPriorityIcon.set(priorityToIconMap.get(
-      this.newTaskForm.controls.newTaskPriority.value || 0) || '');
+    this.newTaskPriorityFC.setValue(((this.newTaskPriorityFC.value||0)+1)%4);
   }
 
   onCreateTask($event: Event) {
@@ -58,14 +44,15 @@ export class AddTaskComponent implements OnInit {
 
     if(this.newTaskForm.invalid){
       this.validationError.set(true);
-      setTimeout(() => {this.validationError.set(false)}, 250);
+      const revertTimeout = setTimeout(() => {this.validationError.set(false)}, 250);
+      this.destroyRef.onDestroy(() => clearTimeout(revertTimeout));
       return;
     }
 
     this.createTask.emit(new Task(
       '', 
-      this.newTaskForm.controls.newTaskName.value || '', 
-      this.newTaskForm.controls.newTaskPriority.value || 0,
+      this.newTaskNameFC.value!, 
+      this.newTaskPriorityFC.value!,
       false,
       this.authService.currentUser.getValue()?.email
     ));

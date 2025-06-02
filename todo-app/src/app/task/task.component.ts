@@ -1,11 +1,11 @@
 import { Component, computed, input, OnInit, output } from '@angular/core';
 import { Task } from '../models/task.model';
-import { priorityToIconMap } from '../utilities/priority.icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { PriorityIconPipe } from "../pipes/priority-icon.pipe";
 
 @Component({
   selector: 'app-task',
-  imports: [FontAwesomeModule],
+  imports: [FontAwesomeModule, PriorityIconPipe],
   templateUrl: './task.component.html',
   styleUrl: './task.component.css'
 })
@@ -13,7 +13,6 @@ export class TaskComponent {
 
   task = input.required<Task>();
   toggleComplete = output<string>();
-  priorityIcon = computed<string>(() => priorityToIconMap.get(this.task().priority || 0) || '');
   isUpdating = input<boolean>(false);
   isCreating = computed<boolean>(() => this.task().id === '');
   searchTerm = input<string>('');
