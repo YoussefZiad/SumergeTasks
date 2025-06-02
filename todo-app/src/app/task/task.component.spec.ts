@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
 import { TaskComponent } from './task.component';
 import { Task } from '../models/task.model';
+import { By } from '@angular/platform-browser';
 
 describe('TaskComponent', () => {
   let component: TaskComponent;
@@ -110,85 +111,85 @@ describe('TaskComponent', () => {
 
     it('element is initialized correctly in default state', () => {
 
-      const listItem = fixture.nativeElement.querySelector('li#pending-task-t1');
-      const mainContainer = fixture.nativeElement.querySelector('#main-container');
-      const taskLabel = fixture.nativeElement.querySelector('#task-label');
-      const priorityIcon = fixture.nativeElement.querySelector('#priority-icon');
-      const toggleButton = fixture.nativeElement.querySelector('button#pending-task-t1');
-      const avatar = fixture.nativeElement.querySelector('#avatar');
-      const avatarText = fixture.nativeElement.querySelector('#avatar-text');
+      const listItem = fixture.debugElement.query(By.css('li#pending-task-t1'));
+      const mainContainer = fixture.debugElement.query(By.css('#main-container'));
+      const taskLabel = fixture.debugElement.query(By.css('#task-label'));
+      const priorityIcon = fixture.debugElement.query(By.css('#priority-icon'));
+      const toggleButton = fixture.debugElement.query(By.css('button#pending-task-t1'));
+      const avatar = fixture.debugElement.query(By.css('#avatar'));
+      const avatarText = fixture.debugElement.query(By.css('#avatar-text'));
 
       expect(listItem)
       .withContext('list item should have the correct id').toBeTruthy();
 
-      expect(listItem.draggable)
+      expect(listItem.properties['draggable'])
       .withContext('list item should be draggable if action is allowed').toBeTrue();
 
       expect(mainContainer)
       .withContext('main container should be rendered').toBeTruthy();
 
-      expect(mainContainer.className)
-      .withContext('main container class should only be task by default').toEqual('task');
+      expect(mainContainer.classes['task'])
+      .withContext('main container class should only be task by default').toBeTrue();
 
       expect(taskLabel)
       .withContext('task label should be rendered').toBeTruthy();
 
-      expect(taskLabel.textContent)
+      expect(taskLabel.nativeElement.textContent)
       .withContext('task label should display task name').toEqual('Task 1');
 
       expect(priorityIcon)
       .withContext('icon should be rendered').toBeTruthy();
 
-      expect(priorityIcon.className)
-      .withContext('icon class name is set properly').toMatch(/.*minus.*/);
+      expect(priorityIcon.classes['minus'])
+      .withContext('icon class name is set properly').toBeTrue();
 
       expect(toggleButton).withContext('Toggle button is given the correct id').toBeTruthy();
 
-      expect(toggleButton.disabled).withContext('Toggle button is enabled').toBeFalse();
+      expect(toggleButton.properties['disabled']).withContext('Toggle button is enabled').toBeFalse();
 
-      expect(toggleButton.textContent)
+      expect(toggleButton.nativeElement.textContent)
       .withContext('Toggle button has the correct text').toEqual('Mark Complete');
 
       expect(avatar).withContext('displays user avatar if assigned').toBeTruthy();
 
-      expect(avatar.title).withContext('avatar tooltip displays user email')
+      expect(avatar.properties['title']).withContext('avatar tooltip displays user email')
       .toEqual('test@test.test');
 
-      expect(avatarText.textContent).withContext('avatar displays user initial').toEqual('T');
+      expect(avatarText.nativeElement.textContent).withContext('avatar displays user initial').toEqual('T');
 
     });
 
     it('element should be inactive if action is not allowed', () => {
 
-      const listItem = fixture.nativeElement.querySelector('li#pending-task-t1');
-      const mainContainer = fixture.nativeElement.querySelector('#main-container');
-      const toggleButton = fixture.nativeElement.querySelector('button#pending-task-t1');
+      const listItem = fixture.debugElement.query(By.css('li#pending-task-t1'));
+      const mainContainer = fixture.debugElement.query(By.css('#main-container'));
+      const toggleButton = fixture.debugElement.query(By.css('button#pending-task-t1'));
       
       fixture.componentRef.setInput('isUpdating', true);
       fixture.detectChanges();
 
-      expect(listItem.draggable)
+      expect(listItem.properties['draggable'])
       .withContext('list item should not be draggable').toBeFalse();
 
-      expect(mainContainer.className)
+      expect(mainContainer.classes['action-forbidden'])
       .withContext('main container should have the action forbidden class')
-      .toMatch(/.*action-forbidden.*/);
+      .toBeTrue();
 
-      expect(toggleButton.disabled)
+      expect(toggleButton.properties['disabled'])
       .withContext('Toggle button should be disabled').toBeTrue();
 
     });
 
     it('element should be highlighted if it is a search result', () => {
 
-      const mainContainer = fixture.nativeElement.querySelector('#main-container');
+      const mainContainer = fixture.debugElement.query(By.css('#main-container'));
 
       fixture.componentRef.setInput('searchTerm', 'Tas');
       fixture.detectChanges();
 
-      expect(mainContainer.className)
+      expect(mainContainer.classes['highlighted'])
       .withContext('main container should have the highlighted class if it is a search result')
-      .toMatch(/.*highlighted.*/)
+      .toBeTrue();
     });
 
     it('element should not show avatar circle if it is unassigned', () => {
@@ -197,7 +198,7 @@ describe('TaskComponent', () => {
       fixture.componentRef.setInput('task', mockTask.cloneTask());
       fixture.detectChanges();
 
-      const avatar = fixture.nativeElement.querySelector('#avatar');
+      const avatar = fixture.debugElement.query(By.css('#avatar'));
 
       expect(avatar).toBeFalsy();
     })
@@ -207,10 +208,10 @@ describe('TaskComponent', () => {
   describe('Testing Interaction', () => {
 
     it('clicking the toggle button should call the correct method', () => {
-      const toggleButton = fixture.nativeElement.querySelector('button#pending-task-t1');
+      const toggleButton = fixture.debugElement.query(By.css('button#pending-task-t1'));
       const toggleSpy = spyOn(component, 'onToggleCompleteness');
 
-      toggleButton.click();
+      toggleButton.triggerEventHandler('click');
 
       expect(toggleSpy).toHaveBeenCalledTimes(1);
 

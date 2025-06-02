@@ -260,7 +260,7 @@ describe('AuthComponent', () => {
       expect(loader).withContext('loader is not rendered when not loading').toBeFalsy();
       expect(errorMsg).withContext('error message is not rendered initially').toBeFalsy();
 
-      expect(authButton.nativeElement.value)
+      expect(authButton.properties['value'])
       .withContext('auth button contains correct text in login mode').toEqual('Login');
 
       expect(modeButton.nativeElement.textContent.trim())
@@ -276,7 +276,7 @@ describe('AuthComponent', () => {
       component.loginMode.set(false);
       fixture.detectChanges();
 
-      expect(authButton.nativeElement.value)
+      expect(authButton.properties['value'])
       .withContext('auth button contains correct text in signup mode').toEqual('Sign Up');
 
       expect(modeButton.nativeElement.textContent.trim())

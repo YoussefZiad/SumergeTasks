@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/auth.model';
 import { AuthService } from '../services/auth.service';
 import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
+import { By } from '@angular/platform-browser';
 
 describe('AddTaskComponent', () => {
   let component: AddTaskComponent;
@@ -152,29 +153,29 @@ describe('AddTaskComponent', () => {
     })
 
     it('should be correctly rendered in default state', () => {
-      const mainContainer = fixture.nativeElement.querySelector('#create-task');
+      const mainContainer = fixture.debugElement.query(By.css('#create-task'));
 
       expect(mainContainer).withContext('main container should be rendered').toBeTruthy();
 
-      const formEl = fixture.nativeElement.querySelector('#create-task-form');
+      const formEl = fixture.debugElement.query(By.css('#create-task-form'));
 
       expect(formEl).withContext('create task form is rendered').toBeTruthy();
 
-      const taskNameTextbox = fixture.nativeElement.querySelector('#task-name-textbox');
+      const taskNameTextbox = fixture.debugElement.query(By.css('#task-name-textbox'));
 
       expect(taskNameTextbox).withContext('task name textbox is rendered').toBeTruthy();
 
-      const changePriorityButton = fixture.nativeElement.querySelector('#change-priority-button');
+      const changePriorityButton = fixture.debugElement.query(By.css('#change-priority-button'));
 
       expect(changePriorityButton).withContext('change priority button is rendered').toBeTruthy();
 
-      const priorityIcon = fixture.nativeElement.querySelector('#priority-icon');
+      const priorityIcon = fixture.debugElement.query(By.css('#priority-icon'));
 
       expect(priorityIcon).withContext('priority icon is rendered').toBeTruthy();
-      expect(priorityIcon.className).withContext('priority icon should display minus initially')
-      .toMatch(/.*minus.*/);
+      expect(priorityIcon.classes['minus'])
+      .withContext('priority icon should display minus initially').toBeTrue();
 
-      const addTaskButton = fixture.nativeElement.querySelector('#add-task-button');
+      const addTaskButton = fixture.debugElement.query(By.css('#add-task-button'));
 
       expect(addTaskButton).toBeTruthy();
 
@@ -183,18 +184,18 @@ describe('AddTaskComponent', () => {
     it('textbox should appear invalid on validation error', () => {
       component.validationError.set(true);
       fixture.detectChanges();
-      const taskNameTextbox = fixture.nativeElement.querySelector('#task-name-textbox');
+      const taskNameTextbox = fixture.debugElement.query(By.css('#task-name-textbox'));
 
-      expect(taskNameTextbox.className).toMatch(/.*create-task-invalid.*/)
+      expect(taskNameTextbox.classes['create-task-invalid']).toBeTrue();
     });
 
     it('priority icon should change to reflect new icon value', () => {
       component.newTaskPriorityFC.setValue(1);
       fixture.detectChanges();
 
-      const priorityIcon = fixture.nativeElement.querySelector('#priority-icon');
+      const priorityIcon = fixture.debugElement.query(By.css('#priority-icon'));
 
-      expect(priorityIcon.className).toMatch(/.*equals.*/);
+      expect(priorityIcon.classes['equals']).toBeTrue();
     });
 
     afterAll(() => {
@@ -209,19 +210,19 @@ describe('AddTaskComponent', () => {
   describe('Testing Interaction', () => {
 
     it('The change priority button should trigger changing priority', () => {
-      const changePriorityButton = fixture.nativeElement.querySelector('#change-priority-button');
+      const changePriorityButton = fixture.debugElement.query(By.css('#change-priority-button'));
       const changePrioritySpy = spyOn(component, 'onChangePriority');
 
-      changePriorityButton.click();
+      changePriorityButton.triggerEventHandler('click');
 
       expect(changePrioritySpy).toHaveBeenCalledTimes(1);
     });
 
-    it('The submission button should trigger task creation', () => {
-      const addTaskButton = fixture.nativeElement.querySelector('#add-task-button');
+    it('form submission should trigger task creation', () => {
+      const addTaskForm = fixture.debugElement.query(By.css('#create-task-form'));
       const addTaskSpy = spyOn(component, 'onCreateTask');
 
-      addTaskButton.click();
+      addTaskForm.triggerEventHandler('submit');
 
       expect(addTaskSpy).toHaveBeenCalledTimes(1);
     });
