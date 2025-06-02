@@ -30,6 +30,7 @@ export class TodoListComponent implements OnInit{
   fetchingTasks = signal<boolean>(true);
   fetchingTasksError = signal<string>('');
   isUpdating = signal<string>('');
+  cdRef = inject(ChangeDetectorRef);
   
   filterFn = signal<(task: Task) => boolean>((task: Task) => true);
 
@@ -43,6 +44,11 @@ export class TodoListComponent implements OnInit{
         this.fetchingTasks.set(false);
       }
     });
+
+    const searchSubscription = this.searchTerm.valueChanges.subscribe(value => {
+      if(this.filterDropdown.value === 'Search Results')
+        this.filterFn.set(this.filterFn().bind({}));
+    })
 
     const dropdownSubscription = this.filterDropdown.valueChanges.subscribe(value => {
       switch(value){
