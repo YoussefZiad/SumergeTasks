@@ -1,0 +1,5 @@
+# Created at 2025-06-03T10:50:10.875
+Boot Manifest-JAR contains absolute paths in classpath 'D:\SumergeTasks\my-app\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+
