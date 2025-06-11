@@ -70,15 +70,16 @@ public class QuizApplication {
     }
 
     public void playQuiz(Scanner sc){
-        for (int i = 0; i < quiz.questions().size(); i++) {
-            quiz.displayQuestion(i);
+        while (quiz.moreQuestions()) {
+            quiz.displayQuestion();
             System.out.println("Answer: ");
             String userAnswer = sc.nextLine();
-            int points = quiz.calculateScore(i, userAnswer);
+            int points = quiz.calculateScore(userAnswer);
             user.setScore(user.getScore() + points);
             System.out.println(points == 0 ? "Incorrect" : "Correct");
             System.out.println("Total Score: " + user.getScore());
             System.out.println();
+            quiz.nextQuestion();
         }
     }
 
