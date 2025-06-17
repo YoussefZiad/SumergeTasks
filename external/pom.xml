@@ -40,14 +40,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>com.example</groupId>
-			<artifactId>external</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>D:/SumergeTasks/out/artifacts/external_jar/external.jar</systemPath>
-		</dependency>
 	</dependencies>
 
 	<build>

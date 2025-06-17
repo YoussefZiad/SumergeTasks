@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
 
-@Component("SecondaryRecommender")
 public class CourseRecommenderImpl2 implements CourseRecommender {
 
     @Autowired
