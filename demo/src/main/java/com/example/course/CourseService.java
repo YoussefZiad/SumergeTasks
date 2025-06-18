@@ -15,8 +15,8 @@ public class CourseService {
         this.courseRepository = courseRepository;
     }
 
-    public void addCourse(String name, String description, int credit){
-        courseRepository.addCourse(name, description, credit);
+    public int addCourse(String name, String description, int credit){
+        return courseRepository.addCourse(name, description, credit);
     }
 
     public void updateCourse(int id, String name, String description, Integer credit){
