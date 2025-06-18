@@ -3,8 +3,14 @@ package com.example.course;
 import com.examplelib.external.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -17,9 +23,24 @@ public class JDBCCourseRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void addCourse(String name, String description, int credit){
-        jdbcTemplate.execute("INSERT INTO Course VALUES('"+name+"','"+description+"','"+credit+"')");
+    public int addCourse(String name, String description, int credit){
+
+        final String INSERT_SQL = "INSERT INTO Course VALUES('"+name+"','"+description+"','"+credit+"')";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(
+                new PreparedStatementCreator() {
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        PreparedStatement ps =
+                                connection.prepareStatement(INSERT_SQL, new String[] {"id"});
+                        return ps;
+                    }
+                },
+                keyHolder);
+
         System.out.println("Added course "+name+" to the database");
+
+        return keyHolder.getKey().intValue();
     }
 
     public void updateCourse(int id, String name, String description, Integer credit){
