@@ -46,7 +46,7 @@
 			<artifactId>external</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>D:/SumergeTasks/out/artifacts/external_jar/external.jar</systemPath>
+			<systemPath>D:/SumergeTasks/external.jar</systemPath>
 		</dependency>
 	</dependencies>
 
