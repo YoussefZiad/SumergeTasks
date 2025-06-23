@@ -35,11 +35,6 @@
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -52,13 +47,6 @@
 			<version>12.10.0.jre11</version>
 		</dependency>
 
-        <dependency>
-            <groupId>com.example</groupId>
-            <artifactId>external</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>D:/SumergeTasks/external.jar</systemPath>
-        </dependency>
 	</dependencies>
 
 	<build>
