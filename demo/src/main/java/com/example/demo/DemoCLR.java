@@ -15,7 +15,7 @@ public class DemoCLR implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Executing CLR after application context is loaded.");
         // Perform startup tasks here, e.g., database initialization
-        courseService.addCourse("Databases II", "bad times", 4);
         System.out.println(courseService.viewCourses());
+        System.out.println(courseService.recommendCourses("SELECT * FROM Course WHERE credit > 4"));
     }
 }

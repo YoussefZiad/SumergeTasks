@@ -18,6 +18,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.example")
+@Import(ExternalConfig.class)
 public class DemoConfig {
 
     JdbcTemplate jdbcTemplate;
@@ -29,13 +30,13 @@ public class DemoConfig {
 
     @Bean("SecondaryRecommender")
     public CourseRecommender secondaryCourseRecommender(){
-        return new CourseRecommenderImpl2();
+        return new CourseRecommenderImpl2(jdbcTemplate);
     }
 
 
     @Bean("TertiaryRecommender")
     public CourseRecommender tertiaryCourseRecommender() {
-        return  new CourseRecommenderImpl3Override();
+        return new CourseRecommenderImpl3Override(jdbcTemplate);
     }
 
 }

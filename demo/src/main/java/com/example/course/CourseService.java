@@ -1,6 +1,9 @@
 package com.example.course;
 
+import com.examplelib.external.Course;
+import com.examplelib.external.CourseRecommender;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,10 +12,12 @@ import java.util.List;
 public class CourseService {
 
     private JDBCCourseRepository courseRepository;
+    private CourseRecommender courseRecommender;
 
     @Autowired
-    public CourseService(JDBCCourseRepository courseRepository) {
+    public CourseService(@Qualifier("TertiaryRecommender") CourseRecommender courseRecommender, JDBCCourseRepository courseRepository) {
         this.courseRepository = courseRepository;
+        this.courseRecommender = courseRecommender;
     }
 
     public void addCourse(String name, String description, int credit){
@@ -33,5 +38,9 @@ public class CourseService {
 
     public List<Course> viewCourses(){
         return courseRepository.viewCourses();
+    }
+
+    public List<Course> recommendCourses(String query){
+        return courseRecommender.recommendCourses(query);
     }
 }

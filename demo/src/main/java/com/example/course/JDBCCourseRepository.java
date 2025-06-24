@@ -1,5 +1,6 @@
 package com.example.course;
 
+import com.examplelib.external.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

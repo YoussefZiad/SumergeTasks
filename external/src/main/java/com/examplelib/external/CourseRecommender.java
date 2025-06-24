@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface CourseRecommender {
 
-    List<Course> recommendCourses();
+    List<Course> recommendCourses(String query);
 
 }
