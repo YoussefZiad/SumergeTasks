@@ -42,7 +42,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.example</groupId>
+			<groupId>com.examplelib</groupId>
 			<artifactId>external</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>

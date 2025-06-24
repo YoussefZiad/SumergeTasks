@@ -3,8 +3,8 @@ package com.example.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import com.example.external.CourseRecommender;
-import com.example.external.Course;
+import com.examplelib.external.CourseRecommender;
+import com.examplelib.external.Course;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.example.demo;
 
-import com.example.external.CourseRecommender;
-import com.example.external.Course;
+import com.examplelib.external.CourseRecommender;
+import com.examplelib.external.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
-package com.example.config;
+package com.examplelib.config2;
 
-import com.example.external.CourseRecommender;
-import com.example.external.CourseRecommenderImpl3;
+import com.examplelib.external.CourseRecommender;
+import com.examplelib.external.CourseRecommenderImpl3;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

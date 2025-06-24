@@ -1,4 +1,4 @@
-package com.example.external;
+package com.examplelib.external;
 
 public class Course {
 

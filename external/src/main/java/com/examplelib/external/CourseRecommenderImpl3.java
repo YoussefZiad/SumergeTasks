@@ -1,4 +1,4 @@
-package com.example.external;
+package com.examplelib.external;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
