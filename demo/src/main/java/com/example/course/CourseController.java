@@ -1,6 +1,7 @@
 package com.example.course;
 
 import com.example.course.dto.CourseDTO;
+import com.examplelib.external.Course;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,12 @@ public class CourseController {
     @Operation(summary = "View Course", description = "Get Course By ID")
     public Course viewCourse(@PathVariable int courseId){
         return this.courseService.viewCourse(courseId);
+    }
+
+    @GetMapping("/courses/recommend")
+    @Operation(summary = "Recommend Courses", description = "Recommend Courses")
+    public List<Course> recommendCourses(){
+        return this.courseService.recommendCourses("SELECT * FROM Course WHERE credit > 4");
     }
 
     @PostMapping("/courses")

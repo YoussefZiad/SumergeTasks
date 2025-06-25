@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
-@ComponentScan("com.example.external")
+@ComponentScan("com.examplelib.external")
 public class ExternalConfig {
 
     @Autowired

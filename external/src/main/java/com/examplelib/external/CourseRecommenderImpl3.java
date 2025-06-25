@@ -3,7 +3,6 @@ package com.examplelib.external;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class CourseRecommenderImpl3 implements CourseRecommender {
