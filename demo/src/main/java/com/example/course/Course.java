@@ -1,9 +1,8 @@
-package com.examplelib.external;
+package com.example.course;
 
 import com.example.assessment.Assessment;
 import com.example.author.Author;
 import com.example.rating.Rating;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -28,9 +27,9 @@ public class Course {
 
     @ManyToMany
     @JoinTable(
-        name = "Author_Course",
-        joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"))
+            name = "Author_Course",
+            joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"))
     @JsonManagedReference
     private Set<Author> authors;
 

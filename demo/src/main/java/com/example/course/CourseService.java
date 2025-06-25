@@ -1,6 +1,5 @@
 package com.example.course;
 
-import com.examplelib.external.Course;
 import com.examplelib.external.CourseRecommender;
 import com.example.course.dto.CourseDTO;
 import com.example.course.dto.CourseData;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -67,7 +65,8 @@ public class CourseService {
         return foundCourses.map(CourseMapper.INSTANCE::courseToCourseData);
     }
 
-    public List<Course> recommendCourses(String query){
-        return courseRecommender.recommendCourses(query);
+    public Page<CourseData> recommendCourses(Pageable pageable){
+        Page<Course> recommended = courseRecommender.recommendCourses(pageable);
+        return recommended.map(CourseMapper.INSTANCE::courseToCourseData);
     }
 }

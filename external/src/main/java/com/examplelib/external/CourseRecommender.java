@@ -1,9 +1,10 @@
 package com.examplelib.external;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CourseRecommender {
 
-    List<Course> recommendCourses(String query);
+    Page recommendCourses(Pageable pageable);
 
 }

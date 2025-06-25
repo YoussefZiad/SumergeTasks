@@ -1,7 +1,5 @@
 package com.example.rating.mappers;
 
-import com.example.course.Course;
-import com.example.course.dto.CourseData;
 import com.example.rating.Rating;
 import com.example.rating.dto.RatingData;
 import org.mapstruct.Mapper;

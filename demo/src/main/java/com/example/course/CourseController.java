@@ -2,7 +2,6 @@ package com.example.course;
 
 import com.example.course.dto.CourseDTO;
 import com.example.course.dto.CourseData;
-import com.examplelib.external.Course;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -54,6 +52,26 @@ public class CourseController {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         return this.courseService.viewCourses(pageable);
+    }
+
+    @GetMapping("/recommend")
+    @Operation(summary = "Recommend Courses", description = "Recommend Courses with credit = 4")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Courses Found Successfully",
+                            content = { @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = CourseData.class)) })
+            }
+    )
+    public Page<CourseData> recommendCourses(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "true") boolean ascending
+    ){
+        Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return this.courseService.recommendCourses(pageable);
     }
 
     @GetMapping("/{courseId}")

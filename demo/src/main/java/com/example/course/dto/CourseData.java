@@ -4,8 +4,6 @@ import com.example.assessment.dto.AssessmentData;
 import com.example.author.dto.AuthorData;
 import com.example.rating.dto.RatingData;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 public class CourseData {

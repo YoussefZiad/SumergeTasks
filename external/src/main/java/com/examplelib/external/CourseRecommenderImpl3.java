@@ -1,30 +1,23 @@
 package com.examplelib.external;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public class CourseRecommenderImpl3 implements CourseRecommender {
 
-    JdbcTemplate jdbcTemplate;
+    SampleRepository repository;
 
     @Autowired
-    public CourseRecommenderImpl3(JdbcTemplate jdbcTemplate){
+    public CourseRecommenderImpl3(SampleRepository repository){
         System.out.println("Impl 3 Created");
-        this.jdbcTemplate = jdbcTemplate;
+        this.repository = repository;
     }
 
     @Override
-    public List<Course> recommendCourses(String query) {
+    public Page recommendCourses(Pageable pageable) {
         System.out.println("Recommending using Tertiary Bean");
-        return jdbcTemplate.query(query,
-                (rs, _) -> new Course(
-                        rs.getInt("id"),
-                        rs.getInt("credit"),
-                        rs.getString("description"),
-                        rs.getString("name")
-                ));
+        return repository.findByCreditGreaterThan(4, pageable);
     }
 
 }

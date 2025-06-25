@@ -1,32 +1,24 @@
 package com.example.demo;
 
+import com.example.course.JPACourseRepository;
 import com.examplelib.external.CourseRecommender;
-import com.examplelib.external.Course;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public class CourseRecommenderImpl2 implements CourseRecommender {
 
-    JdbcTemplate jdbcTemplate;
+    JPACourseRepository repository;
 
     @Autowired
-    public CourseRecommenderImpl2(JdbcTemplate jdbcTemplate){
-        System.out.println("Impl 2 Created");
-        this.jdbcTemplate = jdbcTemplate;
+    public CourseRecommenderImpl2(JPACourseRepository repository){
+        this.repository = repository;
     }
 
     @Override
-    public List<Course> recommendCourses(String query) {
-        System.out.println("Recommending using Tertiary Bean");
-        return jdbcTemplate.query(query,
-                (rs, _) -> new Course(
-                        rs.getInt("id"),
-                        rs.getInt("credit"),
-                        rs.getString("description"),
-                        rs.getString("name")
-                ));
+    public Page recommendCourses(Pageable pageable) {
+        System.out.println("Recommending using Secondary Bean");
+        return repository.findByCreditGreaterThan(6, pageable);
     }
 
 }
