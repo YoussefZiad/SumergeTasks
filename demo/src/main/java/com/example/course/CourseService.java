@@ -1,5 +1,6 @@
 package com.example.course;
 
+import com.example.exception.InvalidOperationException;
 import com.examplelib.external.CourseRecommender;
 import com.example.course.dto.CourseDTO;
 import com.example.course.dto.CourseData;
@@ -24,22 +25,22 @@ public class CourseService {
         this.courseRecommender = courseRecommender;
     }
 
-    public CourseData addCourse(CourseDTO createCourseDTO) throws Exception {
+    public CourseData addCourse(CourseDTO createCourseDTO) throws InvalidOperationException {
         Course insertedCourse = CourseMapper.INSTANCE.courseDTOToCourse(createCourseDTO);
         if(createCourseDTO.name == null)
-            throw new Exception("Course Name must be defined on creation!");
+            throw new InvalidOperationException("Course Name must be defined on creation!");
         if(createCourseDTO.description == null)
-            throw new Exception("Course Description must be defined on creation!");
+            throw new InvalidOperationException("Course Description must be defined on creation!");
         if(createCourseDTO.credit == null)
-            throw new Exception("Course Credit must be defined on creation!");
+            throw new InvalidOperationException("Course Credit must be defined on creation!");
         insertedCourse = courseRepository.save(insertedCourse);
         return CourseMapper.INSTANCE.courseToCourseData(insertedCourse);
     }
 
-    public CourseData updateCourse(int courseId, CourseDTO updateCourseDTO) throws Exception {
+    public CourseData updateCourse(int courseId, CourseDTO updateCourseDTO) throws InvalidOperationException {
         Optional<Course> optionalUpdatedCourse = courseRepository.findById(courseId);
         if(optionalUpdatedCourse.isEmpty())
-            throw new Exception("Course with ID "+courseId+" was not found!");
+            throw new InvalidOperationException("Course with ID "+courseId+" was not found!");
         Course updatedCourse = optionalUpdatedCourse.get();
         if(updateCourseDTO.name != null)
             updatedCourse.setName(updateCourseDTO.name);
@@ -51,7 +52,10 @@ public class CourseService {
         return CourseMapper.INSTANCE.courseToCourseData(updatedCourse);
     }
 
-    public void deleteCourse(int id){
+    public void deleteCourse(int id) throws InvalidOperationException {
+        Optional<Course> optionalUpdatedCourse = courseRepository.findById(id);
+        if(optionalUpdatedCourse.isEmpty())
+            throw new InvalidOperationException("Course with ID "+id+" was not found!");
         courseRepository.deleteById(id);
     }
 

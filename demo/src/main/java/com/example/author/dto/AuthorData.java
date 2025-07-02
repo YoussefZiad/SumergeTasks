@@ -1,10 +1,12 @@
 package com.example.author.dto;
 
 import com.example.course.dto.CourseData;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
 import java.util.Set;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthorData {
 
     private int id;
@@ -21,14 +23,6 @@ public class AuthorData {
         this.name = name;
         this.email = email;
         this.birthdate = birthdate;
-    }
-
-    public AuthorData(int id, String name, String email, Date birthdate, Set<CourseData> courses) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.birthdate = birthdate;
-        this.courses = courses;
     }
 
     public int getId() {
@@ -65,6 +59,20 @@ public class AuthorData {
 
     public Set<CourseData> getCourses() {
         return courses;
+    }
+
+    public void setCourses(Set<CourseData> courses) {
+        this.courses = courses;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof AuthorData a))
+            return false;
+        return id == a.getId()
+                && name.equals(a.getName())
+                && email.equals(a.getEmail())
+                && birthdate.equals(a.getBirthdate());
     }
 
 }

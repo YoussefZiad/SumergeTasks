@@ -26,7 +26,6 @@ public class Author {
     private Date birthdate;
 
     @ManyToMany(mappedBy = "authors")
-    @JsonBackReference
     private Set<Course> courses;
 
     public Author() {
@@ -73,5 +72,9 @@ public class Author {
 
     public Set<Course> getCourses() {
         return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
     }
 }
