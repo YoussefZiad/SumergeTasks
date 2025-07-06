@@ -3,9 +3,11 @@ package com.example.course.dto;
 import com.example.assessment.dto.AssessmentData;
 import com.example.author.dto.AuthorData;
 import com.example.rating.dto.RatingData;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Set;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CourseData {
 
     private int id;
@@ -15,16 +17,6 @@ public class CourseData {
     private Set<AuthorData> authors;
     private Set<RatingData> ratings;
     private AssessmentData assessment;
-
-    public CourseData(int id, String name, String description, Integer credit, Set<AuthorData> authors, Set<RatingData> ratings, AssessmentData assessment) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.credit = credit;
-        this.authors = authors;
-        this.ratings = ratings;
-        this.assessment = assessment;
-    }
 
     public CourseData(int id, String name, String description, Integer credit) {
         this.id = id;
@@ -92,4 +84,15 @@ public class CourseData {
     public void setAssessment(AssessmentData assessment) {
         this.assessment = assessment;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof CourseData c))
+            return false;
+        return id == c.getId()
+                && name.equals(c.getName())
+                && description.equals(c.getDescription())
+                && credit.equals(c.getCredit());
+    }
+
 }

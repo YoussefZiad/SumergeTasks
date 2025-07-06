@@ -30,7 +30,6 @@ public class Course {
             name = "Author_Course",
             joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"))
-    @JsonManagedReference
     private Set<Author> authors;
 
     @OneToMany(mappedBy = "course")
@@ -95,8 +94,15 @@ public class Course {
         return ratings;
     }
 
-    @Override
-    public String toString(){
-        return "Course(name: "+name+", description: "+description+", credit: "+credit+")";
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
+    }
+
+    public void setRatings(Set<Rating> ratings) {
+        this.ratings = ratings;
+    }
+
+    public void setAssessment(Assessment assessment) {
+        this.assessment = assessment;
     }
 }

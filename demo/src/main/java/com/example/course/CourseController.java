@@ -2,6 +2,7 @@ package com.example.course;
 
 import com.example.course.dto.CourseDTO;
 import com.example.course.dto.CourseData;
+import com.example.exception.InvalidOperationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -39,11 +40,11 @@ public class CourseController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Courses Found Successfully",
-                        content = { @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = CourseData.class)) })
+                            content = { @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = CourseData.class)) })
             }
     )
-    public Page<CourseData> viewCourses(
+    public ResponseEntity<Page<CourseData>> viewCourses(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -51,7 +52,7 @@ public class CourseController {
     ){
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        return this.courseService.viewCourses(pageable);
+        return ResponseEntity.ok(this.courseService.viewCourses(pageable));
     }
 
     @GetMapping("/recommend")
@@ -60,10 +61,10 @@ public class CourseController {
             value = {
                     @ApiResponse(responseCode = "200", description = "Courses Found Successfully",
                             content = { @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = CourseData.class)) })
+                                    schema = @Schema(implementation = CourseData.class)) }),
             }
     )
-    public Page<CourseData> recommendCourses(
+    public ResponseEntity<Page<CourseData>> recommendCourses(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -71,7 +72,7 @@ public class CourseController {
     ){
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        return this.courseService.recommendCourses(pageable);
+        return ResponseEntity.ok(this.courseService.recommendCourses(pageable));
     }
 
     @GetMapping("/{courseId}")
@@ -80,11 +81,15 @@ public class CourseController {
             value = {
                     @ApiResponse(responseCode = "200", description = "Course Found Successfully",
                             content = { @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = CourseData.class)) }),
+                    @ApiResponse(responseCode = "404", description = "Course Not Found",
+                            content = { @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = CourseData.class)) })
             }
     )
-    public Optional<CourseData> viewCourse(@PathVariable int courseId){
-        return this.courseService.viewCourse(courseId);
+    public ResponseEntity<CourseData> viewCourse(@PathVariable int courseId){
+        Optional<CourseData> res = this.courseService.viewCourse(courseId);
+        return res.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/")
@@ -105,12 +110,17 @@ public class CourseController {
                             examples = @ExampleObject(value =
                                     "{ \"name\": \"CS I\", \"description\": \"slim\", \"credit\": 8}")))
             @RequestBody CourseDTO body) throws Exception {
-        CourseData createdEntity = this.courseService.addCourse(body);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdEntity.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(createdEntity);
+        try {
+            CourseData createdEntity = this.courseService.addCourse(body);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(createdEntity.getId())
+                    .toUri();
+            return ResponseEntity.created(location).body(createdEntity);
+        }
+        catch (InvalidOperationException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{courseId}")
@@ -123,7 +133,7 @@ public class CourseController {
             }
     )
     @Operation(summary = "Update Course", description = "Update Course by id")
-    public CourseData updateCourse(@PathVariable int courseId,
+    public ResponseEntity<CourseData> updateCourse(@PathVariable int courseId,
            @io.swagger.v3.oas.annotations.parameters.RequestBody(
                    description = "Course to update", required = true,
                    content = @Content(mediaType = "application/json",
@@ -131,7 +141,13 @@ public class CourseController {
                            examples = @ExampleObject(value =
                                    "{ \"name\": \"CS I\", \"description\": \"slim\", \"credit\": 8}")))
            @RequestBody CourseDTO body) throws Exception {
-        return this.courseService.updateCourse(courseId, body);
+        try {
+            this.courseService.updateCourse(courseId, body);
+            return ResponseEntity.noContent().build();
+        }
+        catch (InvalidOperationException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{courseId}")
@@ -144,8 +160,14 @@ public class CourseController {
             }
     )
     @Operation(summary = "Delete Course", description = "Delete Course by id")
-    public void deleteCourse(@PathVariable int courseId){
-        this.courseService.deleteCourse(courseId);
+    public ResponseEntity<Void> deleteCourse(@PathVariable int courseId){
+        try {
+            this.courseService.deleteCourse(courseId);
+            return ResponseEntity.noContent().build();
+        }
+        catch (InvalidOperationException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

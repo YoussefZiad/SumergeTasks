@@ -1,7 +1,10 @@
 package com.example.assessment.dto;
 
 import com.example.course.dto.CourseData;
+import com.example.rating.dto.RatingData;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AssessmentData {
 
     private int id;
@@ -14,12 +17,6 @@ public class AssessmentData {
     public AssessmentData(int id, String content) {
         this.id = id;
         this.content = content;
-    }
-
-    public AssessmentData(int id, String content, CourseData course) {
-        this.id = id;
-        this.content = content;
-        this.course = course;
     }
 
     public int getId() {
@@ -40,6 +37,14 @@ public class AssessmentData {
 
     public CourseData getCourse() {
         return course;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof AssessmentData a))
+            return false;
+        return id == a.getId()
+                && content.equals(a.getContent());
     }
 
 }
