@@ -3,10 +3,12 @@ package com.example.course;
 import com.example.course.dto.CourseDTO;
 import com.example.course.dto.CourseData;
 import com.example.exception.InvalidOperationException;
+import com.example.security.SecurityConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -21,13 +23,14 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import static org.mockito.BDDMockito.given;
 
+@Import(SecurityConfiguration.class)
 @WebMvcTest(CourseController.class)
 public class CourseControllerTests {
 
@@ -52,6 +55,7 @@ public class CourseControllerTests {
         given(service.viewCourses(any(Pageable.class))).willReturn(courseDataPage);
 
         mvc.perform(get("/api/courses/")
+                        .header("x-validation-report", "true")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
@@ -72,6 +76,7 @@ public class CourseControllerTests {
         given(service.recommendCourses(any(Pageable.class))).willReturn(courseDataPage);
 
         mvc.perform(get("/api/courses/recommend")
+                        .header("x-validation-report", "true")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
@@ -89,6 +94,7 @@ public class CourseControllerTests {
         given(service.viewCourse(1)).willReturn(Optional.of(courseData1));
 
         mvc.perform(get("/api/courses/1")
+                        .header("x-validation-report", "true")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
@@ -103,6 +109,7 @@ public class CourseControllerTests {
         given(service.viewCourse(1)).willReturn(Optional.empty());
 
         mvc.perform(get("/api/courses/1")
+                        .header("x-validation-report", "true")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -123,6 +130,8 @@ public class CourseControllerTests {
         given(service.addCourse(any(CourseDTO.class))).willReturn(createdCourseData);
 
         mvc.perform(post("/api/courses/")
+                        .header("x-validation-report", "true")
+                        .with(httpBasic("yziad", "pass"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDTO)))
                 .andExpect(status().isCreated())
@@ -139,6 +148,8 @@ public class CourseControllerTests {
         given(service.addCourse(any(CourseDTO.class))).willThrow(InvalidOperationException.class);
 
         mvc.perform(post("/api/courses/")
+                        .header("x-validation-report", "true")
+                        .with(httpBasic("yziad", "pass"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isBadRequest());
@@ -160,6 +171,8 @@ public class CourseControllerTests {
         given(service.updateCourse(eq(1), any(CourseDTO.class))).willReturn(createdCourseData);
 
         mvc.perform(put("/api/courses/1")
+                        .header("x-validation-report", "true")
+                        .with(httpBasic("yziad", "pass"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDTO)))
                 .andExpect(status().isNoContent());
@@ -175,6 +188,8 @@ public class CourseControllerTests {
 
         mvc.perform(put("/api/courses/1")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("x-validation-report", "true")
+                        .with(httpBasic("yziad", "pass"))
                         .content("{}"))
                 .andExpect(status().isNotFound());
 
@@ -185,6 +200,8 @@ public class CourseControllerTests {
             throws Exception {
 
         mvc.perform(delete("/api/courses/1")
+                        .header("x-validation-report", "true")
+                        .with(httpBasic("yziad", "pass"))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
@@ -197,6 +214,8 @@ public class CourseControllerTests {
         doThrow(InvalidOperationException.class).when(service).deleteCourse(1);
 
         mvc.perform(delete("/api/courses/1")
+                        .header("x-validation-report", "true")
+                        .with(httpBasic("yziad", "pass"))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
 

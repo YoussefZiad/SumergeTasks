@@ -2,6 +2,7 @@ package com.example.config;
 
 import com.example.course.JPACourseRepository;
 import com.example.demo.CourseRecommenderImpl2;
+import com.example.security.SecurityConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.demo.CourseRecommenderImpl3Override;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,7 @@ import com.examplelib.external.CourseRecommender;
 
 @Configuration
 @ComponentScan("com.example")
-@Import(ExternalConfig.class)
+@Import({ExternalConfig.class, SecurityConfiguration.class})
 public class DemoConfig {
 
     JPACourseRepository repository;

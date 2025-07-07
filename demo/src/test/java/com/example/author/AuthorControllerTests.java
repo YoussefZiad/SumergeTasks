@@ -1,10 +1,12 @@
 package com.example.author;
 
 import com.example.author.dto.AuthorData;
+import com.example.security.SecurityConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -14,12 +16,11 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Import(SecurityConfiguration.class)
 @WebMvcTest(AuthorController.class)
 public class AuthorControllerTests {
 
@@ -41,7 +42,8 @@ public class AuthorControllerTests {
         given(service.findByEmail(any(String.class))).willReturn(Optional.of(authorData));
 
         mvc.perform(get("/api/authors/email/test@test.test")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("x-validation-report", "true"))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -55,7 +57,8 @@ public class AuthorControllerTests {
         given(service.findByEmail(any(String.class))).willReturn(Optional.empty());
 
         mvc.perform(get("/api/authors/email/test@test.test")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("x-validation-report", "true"))
                 .andExpect(status().isNotFound());
     }
 
