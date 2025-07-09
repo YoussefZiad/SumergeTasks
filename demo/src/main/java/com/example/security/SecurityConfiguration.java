@@ -33,7 +33,6 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/api/courses/**").hasRole("USER")
                         .requestMatchers(HttpMethod.DELETE, "/api/courses/**").hasRole("USER")
                         .requestMatchers(HttpMethod.GET).permitAll()
-//                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 ;
